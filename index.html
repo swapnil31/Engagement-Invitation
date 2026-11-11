@@ -133,6 +133,16 @@
   .music.on .bars i:nth-child(2) { animation-delay: .3s; }
   .music.on .bars i:nth-child(3) { animation-delay: .6s; }
   @keyframes eq { to { height: 12px; } }
+  .player {
+    position: fixed; z-index: 5;
+    right: calc(18px + env(safe-area-inset-right, 0px));
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    width: min(240px, calc(100vw - 36px));
+    background: var(--ink); border: 1px solid var(--gold); border-radius: 8px; overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  }
+  .player iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
+  .player p { margin: 0; padding: 6px 10px; font-family: var(--f-caps); font-size: 11px; letter-spacing: .12em; color: var(--gold-soft); }
   @keyframes rise { from { opacity: .001; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .card { animation: none; } #petals { display: none; } }
   @media (max-width: 420px) {
@@ -207,9 +217,6 @@
     <a class="btn" id="map" href="#" target="_blank" rel="noopener">Get Directions</a>
     <a class="btn" id="cal" href="#" target="_blank" rel="noopener">Add to Calendar</a>
   </div>
-  <div class="actions" style="margin-top:10px">
-    <a class="btn" id="song" href="https://www.youtube.com/watch?v=mSVEyEEYXSs" target="_blank" rel="noopener">♪ Listen · Rishtedaar by Tera Bhai Paul</a>
-  </div>
 
   <p class="dress">RSVP on WhatsApp &nbsp;<em>+91 77830 29077 · +91 70334 97771</em></p>
   <p class="note">Kindly confirm your presence.<br>Your blessings are our greatest gift.</p>
@@ -218,6 +225,9 @@
 <button class="music" id="music" type="button" aria-pressed="false">
   <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="music-label">Play music</span>
 </button>
+<div class="player" id="player" hidden>
+  <p>♪ Rishtedaar · Tera Bhai Paul</p>
+</div>
 
 <script>
   // ---- Edit these to update the live invitation ----
@@ -288,7 +298,29 @@
         }
       }, 250);
     }
+    // On the hosted site, play the song in a small on-page YouTube player.
+    // Where embedded players are blocked (the claude.ai preview), fall back to the generated tune.
+    const SONG = "mSVEyEEYXSs";
+    const canEmbed = /github\.io$/.test(location.hostname) || location.protocol === "file:";
+    const player = $("player");
     btn.addEventListener("click", () => {
+      if (canEmbed) {
+        on = !on;
+        const old = player.querySelector("iframe");
+        if (old) old.remove();
+        if (on) {
+          const f = document.createElement("iframe");
+          f.src = "https://www.youtube-nocookie.com/embed/" + SONG + "?autoplay=1&loop=1&playlist=" + SONG + "&playsinline=1&rel=0";
+          f.title = "Rishtedaar by Tera Bhai Paul";
+          f.allow = "autoplay; encrypted-media";
+          player.prepend(f);
+        }
+        player.hidden = !on;
+        btn.classList.toggle("on", on);
+        btn.setAttribute("aria-pressed", on);
+        label.textContent = on ? "Stop music" : "Play music";
+        return;
+      }
       try {
         if (!ctx) build();
         on = !on;
