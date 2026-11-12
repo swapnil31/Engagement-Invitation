@@ -1,6 +1,6 @@
 # Swapnil & Piyusha Engagement Invitation
 
-A single-page digital invitation for the engagement ceremony on Thursday, 19 November 2026 in Siwan, Bihar.
+A single-page digital invitation for the engagement ceremony on Thursday, 19 November 2026 at Hotel Comfort Inn & Banquet Hall, Pachrukhi, Siwan, Bihar.
 
 It includes a countdown, the day's schedule, WhatsApp RSVP buttons, links for directions and adding the event to Google Calendar, falling petals, and an optional soft music track generated in the browser.
 
