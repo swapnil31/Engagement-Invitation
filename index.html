@@ -9,15 +9,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Marcellus+SC&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
-  /* Layout: a single tall card on a peacock-ink ground, like a foil-pressed invitation; details stack below the names. Deliberately single-theme. */
+  /* Layout: a single tall card on a candle-lit wine and blush ground, like a rose-gold foil invitation; details stack below the names. Deliberately single-theme. */
   :root {
-    --ink: #0d2430;          /* peacock night */
-    --ink-2: #123341;
-    --card: #f7f1e3;         /* handmade paper */
-    --card-edge: #e7dcc2;
-    --gold: #b8892f;         /* foil */
-    --gold-soft: #d9b86a;
-    --rose: #9b3b4a;         /* marigold-rose for dates */
+    --ink: #5a1530;          /* deep rose wine for names and buttons */
+    --ink-2: #7a2445;
+    --wine: #2a0915;         /* night background */
+    --wine-2: #5e1a36;
+    --card: #fdf6f3;         /* blush paper */
+    --card-edge: #f0d9d3;
+    --gold: #b7794f;         /* rose-gold foil */
+    --gold-soft: #ddb193;
+    --rose: #b0304f;         /* dates and accents */
     --text: #2a2622;
     --muted: #6b6153;
     --f-script: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
@@ -27,8 +29,13 @@
   }
   * { box-sizing: border-box; }
   body {
-    background: radial-gradient(120% 80% at 50% 0%, var(--ink-2), var(--ink) 70%);
-    background-color: var(--ink);
+    background:
+      radial-gradient(55% 45% at 12% 8%, rgba(255, 150, 180, .30), transparent 65%),
+      radial-gradient(45% 40% at 90% 25%, rgba(255, 196, 160, .20), transparent 65%),
+      radial-gradient(70% 55% at 50% 105%, rgba(220, 80, 125, .38), transparent 65%),
+      linear-gradient(165deg, var(--wine-2), var(--wine) 62%);
+    background-attachment: fixed;
+    background-color: var(--wine);
     color: var(--text);
     font-family: var(--f-body);
     font-size: 18px;
@@ -116,33 +123,34 @@
   .dress { font-family: var(--f-caps); font-size: 13px; letter-spacing: .18em; color: var(--text); margin-top: 10px; }
   .dress em { font-family: var(--f-body); font-style: italic; letter-spacing: 0; text-transform: none; font-size: 16px; color: var(--rose); }
 
-  .music {
-    position: fixed; z-index: 5;
-    right: calc(18px + env(safe-area-inset-right, 0px));
-    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-    display: flex; align-items: center; gap: 8px;
-    font-family: var(--f-caps); letter-spacing: .14em; font-size: 12px;
-    padding: 10px 16px; border-radius: 999px; cursor: pointer;
-    background: var(--ink); color: var(--gold-soft); border: 1px solid var(--gold);
-    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  .popup {
+    position: fixed; inset: 0; z-index: 20;
+    display: grid; place-items: center;
+    padding-block: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    background: color-mix(in srgb, var(--wine) 72%, transparent);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    animation: fade .5s ease both;
   }
-  .music:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 3px; }
-  .music .bars { display: inline-flex; gap: 2px; align-items: flex-end; height: 12px; }
-  .music .bars i { width: 2px; height: 4px; background: currentColor; }
-  .music.on .bars i { animation: eq .9s ease-in-out infinite alternate; }
-  .music.on .bars i:nth-child(2) { animation-delay: .3s; }
-  .music.on .bars i:nth-child(3) { animation-delay: .6s; }
-  @keyframes eq { to { height: 12px; } }
-  .player {
-    position: fixed; z-index: 5;
-    right: calc(18px + env(safe-area-inset-right, 0px));
-    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
-    width: min(240px, calc(100vw - 36px));
-    background: var(--ink); border: 1px solid var(--gold); border-radius: 8px; overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  .popup-card {
+    position: relative; max-width: 380px; width: 100%;
+    background: var(--card); border-radius: 18px; text-align: center;
+    padding: 34px 26px 26px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 0 1px var(--gold-soft) inset;
+    animation: pop .6s cubic-bezier(.2,1.4,.4,1) both .1s;
   }
-  .player iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
-  .player p { margin: 0; padding: 6px 10px; font-family: var(--f-caps); font-size: 11px; letter-spacing: .12em; color: var(--gold-soft); }
+  .popup-card .heart { font-size: 34px; color: var(--rose); line-height: 1; }
+  .popup-card h2 {
+    font-family: var(--f-script); font-weight: 400; color: var(--ink);
+    font-size: 40px; line-height: 1.15; margin: 10px 0 6px; text-wrap: balance;
+  }
+  .popup-card p { margin: 0 auto; max-width: 28ch; font-size: 21px; color: var(--text); text-wrap: balance; }
+  .popup-card p b { color: var(--rose); font-weight: 600; font-size: 1.15em; }
+  .popup-card .btn { margin-top: 22px; display: inline-block; cursor: pointer; font-size: 14px; padding: 13px 22px; border-radius: 999px; }
+  .popup-card small { display: block; margin-top: 12px; font-style: italic; color: var(--muted); font-size: 14px; }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes pop { from { opacity: 0; transform: scale(.85) translateY(10px); } }
   @keyframes rise { from { opacity: .001; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .card { animation: none; } #petals { display: none; } }
   @media (max-width: 420px) {
@@ -222,11 +230,14 @@
   <p class="note">Kindly confirm your presence.<br>Your blessings are our greatest gift.</p>
 </main>
 
-<button class="music" id="music" type="button" aria-pressed="false">
-  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="music-label">Play music</span>
-</button>
-<div class="player" id="player" hidden>
-  <p>♪ Rishtedaar · Tera Bhai Paul</p>
+<div class="popup" id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+  <div class="popup-card">
+    <div class="heart" aria-hidden="true">♥</div>
+    <h2 id="popup-title">Engagement hai, khaana bhi hai…</h2>
+    <p>toh shagun <b>₹500</b> se neeche mat dena! 😄</p>
+    <button class="btn primary" id="popup-ok" type="button">Pakka! Invitation kholo 💍</button>
+    <small>Music will start softly</small>
+  </div>
 </div>
 
 <script>
@@ -264,90 +275,128 @@
   }
   tick(); setInterval(tick, 1000);
 
-  // Soft music: a gentle music-box melody over a low drone, generated in the browser
-  (function () {
-    const btn = $("music"), label = $("music-label");
-    let ctx = null, on = false;
+  // Soft romantic piano, generated in the browser. Browsers only allow sound after a tap,
+  // so it starts on load where allowed, otherwise on the popup button or the first tap anywhere.
+  const Piano = (function () {
+    let ctx = null, started = false;
+    const midi = m => 440 * Math.pow(2, (m - 69) / 12);
+    // 8 bars in 3/4, six eighth notes each: [bass, arpeggio...] and two melody notes per bar
+    const BARS = [
+      { arp: [50, 57, 61, 66, 61, 57], mel: [78, 76] },   // Dmaj7
+      { arp: [47, 54, 57, 62, 57, 54], mel: [74, 76] },   // Bm7
+      { arp: [43, 50, 54, 59, 54, 50], mel: [74, 71] },   // Gmaj7
+      { arp: [45, 52, 57, 61, 57, 52], mel: [73, 76] },   // A
+      { arp: [40, 52, 59, 62, 59, 52], mel: [79, 78] },   // Em7
+      { arp: [45, 52, 55, 61, 55, 52], mel: [76, 73] },   // A7
+      { arp: [50, 57, 61, 66, 61, 57], mel: [74, 78] },   // Dmaj7
+      { arp: [50, 57, 62, 66, 62, 57], mel: [74, null] }  // D
+    ];
+    const STEP = 0.4;
+    function impulse(sec) {
+      const len = ctx.sampleRate * sec, b = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const d = b.getChannelData(c);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
+      }
+      return b;
+    }
     function build() {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const master = ctx.createGain(); master.gain.value = 0.16; master.connect(ctx.destination);
-      const delay = ctx.createDelay(); delay.delayTime.value = 0.42;
-      const fb = ctx.createGain(); fb.gain.value = 0.38;
-      delay.connect(fb); fb.connect(delay); delay.connect(master);
-      [[73.42, .10], [110, .06], [146.83, .035]].forEach(([f, v]) => {
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = "sine"; o.frequency.value = f; g.gain.value = v;
-        o.connect(g); g.connect(master); o.start();
-      });
-      const scale = [293.66, 329.63, 369.99, 440, 493.88, 587.33, 659.25];
-      const tune = [0, 2, 3, 4, 3, 2, 1, 0, 2, 3, 5, 4, 3, 2, 3, 0, 4, 5, 6, 5, 4, 3, 2, 3, 2, 1, 0, 1, 2, 1, 0, 0];
-      let step = 0, next = ctx.currentTime + 0.3;
-      function note(f, t) {
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = "triangle"; o.frequency.value = f;
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, ctx.currentTime);
+      master.gain.exponentialRampToValueAtTime(0.5, ctx.currentTime + 3);
+      const tone = ctx.createBiquadFilter(); tone.type = "lowpass"; tone.frequency.value = 2600;
+      const verb = ctx.createConvolver(); verb.buffer = impulse(3);
+      const wet = ctx.createGain(); wet.gain.value = 0.45;
+      tone.connect(master); tone.connect(verb); verb.connect(wet); wet.connect(master);
+      master.connect(ctx.destination);
+      function note(m, t, vel) {
+        const f = midi(m), len = m < 55 ? 4 : m < 70 ? 3 : 2.4;
+        const g = ctx.createGain();
         g.gain.setValueAtTime(0.0001, t);
-        g.gain.linearRampToValueAtTime(0.3, t + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
-        o.connect(g); g.connect(master); g.connect(delay);
-        o.start(t); o.stop(t + 1.9);
+        g.gain.linearRampToValueAtTime(vel, t + 0.006);
+        g.gain.exponentialRampToValueAtTime(vel * 0.35, t + 0.25);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+        g.connect(tone);
+        [[1, 1, "sine"], [2, .32, "sine"], [3, .1, "sine"], [1.003, .18, "triangle"]].forEach(([h, a, type]) => {
+          const o = ctx.createOscillator(), og = ctx.createGain();
+          o.type = type; o.frequency.value = f * h; og.gain.value = a;
+          o.connect(og); og.connect(g); o.start(t); o.stop(t + len + 0.1);
+        });
       }
+      let bar = 0, step = 0, next = ctx.currentTime + 0.2;
       setInterval(() => {
-        while (next < ctx.currentTime + 1) {
-          if (step % 8 !== 7) note(scale[tune[step % tune.length]], next);
-          step++; next += 0.8;
+        while (next < ctx.currentTime + 1.2) {
+          const b = BARS[bar];
+          note(b.arp[step], next, step === 0 ? 0.13 : 0.07);
+          if (step === 0 && b.mel[0]) note(b.mel[0], next, 0.12);
+          if (step === 3 && b.mel[1]) note(b.mel[1], next, 0.1);
+          next += STEP;
+          if (++step === 6) { step = 0; bar = (bar + 1) % BARS.length; }
         }
-      }, 250);
+      }, 200);
     }
-    // On the hosted site, play the song in a small on-page YouTube player.
-    // Where embedded players are blocked (the claude.ai preview), fall back to the generated tune.
-    const SONG = "mSVEyEEYXSs";
-    const canEmbed = /github\.io$/.test(location.hostname) || location.protocol === "file:";
-    const player = $("player");
-    btn.addEventListener("click", () => {
-      if (canEmbed) {
-        on = !on;
-        const old = player.querySelector("iframe");
-        if (old) old.remove();
-        if (on) {
-          const f = document.createElement("iframe");
-          f.src = "https://www.youtube-nocookie.com/embed/" + SONG + "?autoplay=1&loop=1&playlist=" + SONG + "&playsinline=1&rel=0";
-          f.title = "Rishtedaar by Tera Bhai Paul";
-          f.allow = "autoplay; encrypted-media";
-          player.prepend(f);
-        }
-        player.hidden = !on;
-        btn.classList.toggle("on", on);
-        btn.setAttribute("aria-pressed", on);
-        label.textContent = on ? "Stop music" : "Play music";
-        return;
-      }
-      try {
-        if (!ctx) build();
-        on = !on;
-        on ? ctx.resume() : ctx.suspend();
-        btn.classList.toggle("on", on);
-        btn.setAttribute("aria-pressed", on);
-        label.textContent = on ? "Pause music" : "Play music";
-      } catch (e) { label.textContent = "Music unavailable"; }
-    });
+    return {
+      start() {
+        try {
+          if (!ctx) build();
+          ctx.resume().then(() => { started = ctx.state === "running"; });
+        } catch (e) {}
+      },
+      get playing() { return started; }
+    };
   })();
+
+  // Try right away; most browsers wait for a tap, which the popup gives
+  Piano.start();
+  const kick = () => Piano.start();
+  ["pointerdown", "keydown", "touchstart"].forEach(ev => addEventListener(ev, kick, { once: true, passive: true }));
+
+  const popup = $("popup");
+  function closePopup() { Piano.start(); popup.hidden = true; }
+  $("popup-ok").addEventListener("click", closePopup);
+  popup.addEventListener("click", e => { if (e.target === popup) closePopup(); });
+  addEventListener("keydown", e => { if (e.key === "Escape" && !popup.hidden) closePopup(); });
+  $("popup-ok").focus();
 
   // Gentle falling petals
   (function () {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const c = $("petals"), x = c.getContext("2d");
     let W, H, P = [];
-    const cols = ["#d9b86a", "#e8a0a8", "#f2c46d", "#c9707c"];
-    function size() { W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; c.style.width = innerWidth + "px"; c.style.height = innerHeight + "px"; }
+    const cols = ["#ff9fb8", "#f4b6c2", "#ddb193", "#e46a8c", "#ffd1dc"];
+    const dpr = devicePixelRatio || 1;
+    let B = [];
+    function size() { W = c.width = innerWidth * dpr; H = c.height = innerHeight * dpr; c.style.width = innerWidth + "px"; c.style.height = innerHeight + "px"; }
     size(); addEventListener("resize", size);
-    for (let i = 0; i < 26; i++) P.push({ x: Math.random() * W, y: Math.random() * H, r: (4 + Math.random() * 5) * devicePixelRatio, v: .3 + Math.random() * .7, a: Math.random() * 6.28, w: .01 + Math.random() * .02, c: cols[i % 4] });
+    // falling rose petals and small hearts
+    for (let i = 0; i < 30; i++) P.push({ x: Math.random() * W, y: Math.random() * H, r: (4 + Math.random() * 6) * dpr, v: .25 + Math.random() * .6, a: Math.random() * 6.28, w: .008 + Math.random() * .018, c: cols[i % cols.length], heart: i % 3 === 0 });
+    // soft glowing bokeh lights that drift upward
+    for (let i = 0; i < 14; i++) B.push({ x: Math.random() * W, y: Math.random() * H, r: (18 + Math.random() * 46) * dpr, v: .08 + Math.random() * .18, t: Math.random() * 6.28, c: i % 2 ? "255,170,195" : "255,210,170" });
+    function heart(s) {
+      x.beginPath();
+      x.moveTo(0, s * .35);
+      x.bezierCurveTo(-s * 1.1, -s * .35, -s * .45, -s * 1.05, 0, -s * .45);
+      x.bezierCurveTo(s * .45, -s * 1.05, s * 1.1, -s * .35, 0, s * .35);
+      x.fill();
+    }
     (function draw() {
       x.clearRect(0, 0, W, H);
+      for (const b of B) {
+        b.y -= b.v * dpr; b.t += .01;
+        if (b.y < -b.r) { b.y = H + b.r; b.x = Math.random() * W; }
+        const g = x.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+        const al = .10 + Math.sin(b.t) * .05;
+        g.addColorStop(0, "rgba(" + b.c + "," + al + ")"); g.addColorStop(1, "rgba(" + b.c + ",0)");
+        x.fillStyle = g; x.beginPath(); x.arc(b.x, b.y, b.r, 0, 6.28); x.fill();
+      }
       for (const p of P) {
-        p.y += p.v * devicePixelRatio; p.a += p.w; p.x += Math.sin(p.a) * .6 * devicePixelRatio;
+        p.y += p.v * dpr; p.a += p.w; p.x += Math.sin(p.a) * .6 * dpr;
         if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
-        x.save(); x.translate(p.x, p.y); x.rotate(p.a); x.globalAlpha = .55; x.fillStyle = p.c;
-        x.beginPath(); x.ellipse(0, 0, p.r, p.r * .55, 0, 0, 6.28); x.fill(); x.restore();
+        x.save(); x.translate(p.x, p.y); x.globalAlpha = .6; x.fillStyle = p.c;
+        if (p.heart) { x.rotate(Math.sin(p.a) * .4); heart(p.r * 1.3); }
+        else { x.rotate(p.a); x.beginPath(); x.ellipse(0, 0, p.r, p.r * .55, 0, 0, 6.28); x.fill(); }
+        x.restore();
       }
       requestAnimationFrame(draw);
     })();
